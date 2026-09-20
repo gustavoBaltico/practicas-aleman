@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Alemán: A1 - B1 | Flashcards & Gamificación</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        der: '#2563eb',   <!-- Azul para der -->
+                        die: '#dc2626',   <!-- Rojo para die -->
+                        das: '#16a34a',   <!-- Verde para das -->
+                        plural: '#d97706',<!-- Naranja/Amarillo para Plural -->
+                        grammar: '#8b5cf6'<!-- Púrpura para Gramática -->
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* 3D Flip Card Effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+
+        /* Glow effects */
+        .glow-xp {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-red-500 to-black text-white flex items-center justify-center font-bold text-xl shadow-md">
+                    DE
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight leading-none bg-gradient-to-r from-amber-600 via-red-600 to-slate-800 dark:to-slate-100 bg-clip-text text-transparent">
+                        DeutschFlash
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">A1 • A2 • B1 Dominio</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar (XP, Streak, Level) -->
+            <div class="flex items-center space-x-3 sm:space-x-6">
+                <!-- Daily Streak -->
+                <div class="flex items-center space-x-1.5 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 px-3 py-1.5 rounded-full text-sm font-semibold" title="Racha de días consecutivos">
+                    <i class="fa-solid fa-fire text-orange-500 animate-pulse"></i>
+                    <span id="streak-count">1</span>
+                    <span class="hidden sm:inline text-xs font-normal">días</span>
+                </div>
+
+                <!-- Level & XP Badge -->
+                <div class="flex items-center space-x-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 px-3 py-1.5 rounded-full text-sm font-semibold">
+                    <i class="fa-solid fa-trophy text-amber-500"></i>
+                    <span id="player-level">Anfänger</span>
+                    <span class="text-xs bg-amber-200 dark:bg-amber-800 px-2 py-0.5 rounded-full text-amber-900 dark:text-amber-100" id="xp-display">0 XP</span>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+                    <i class="fa-solid fa-sun text-lg hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation / Filters -->
+        <aside class="lg:col-span-1 space-y-6">
+            
+            <!-- Navigation Tabs -->
+            <div class="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col space-y-1">
+                <button id="tab-study" onclick="switchMainTab('study')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition bg-amber-500 text-white shadow-sm">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-clone"></i>
+                        <span>Flashcards</span>
+                    </span>
+                    <span class="text-xs px-2 py-0.5 bg-black/20 rounded-full" id="cards-count-badge">0</span>
+                </button>
+                <button id="tab-quiz" onclick="switchMainTab('quiz')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-stopwatch"></i>
+                        <span>Quiz Rápido</span>
+                    </span>
+                    <span class="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded font-bold uppercase text-[10px]">XP Extra</span>
+                </button>
+                <button id="tab-badges" onclick="switchMainTab('badges')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-award"></i>
+                        <span>Logros & Medallas</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-50"></i>
+                </button>
+            </div>
+
+            <!-- Filters Card (Level & Category) -->
+            <div id="sidebar-filters" class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Filtros de Estudio</h3>
+                
+                <!-- Level Selection -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Nivel CEFR</label>
+                    <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
+                        <button onclick="setFilterLevel('ALL')" class="level-btn active-level py-1.5 rounded-lg text-xs font-bold transition shadow-sm bg-white dark:bg-slate-700 text-slate-800 dark:text-white" data-level="ALL">Todos</button>
+                        <button onclick="setFilterLevel('A1')" class="level-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white" data-level="A1">A1</button>
+                        <button onclick="setFilterLevel('A2')" class="level-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white" data-level="A2">A2</button>
+                        <button onclick="setFilterLevel('B1')" class="level-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white" data-level="B1">B1</button>
+                    </div>
+                </div>
+
+                <!-- Type Selection (Vocab vs Grammar) -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Tipo de Contenido</label>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button onclick="setFilterType('ALL')" class="type-btn active-type px-2 py-1.5 rounded-lg text-xs font-medium border border-amber-500 bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300" data-type="ALL">Todos</button>
+                        <button onclick="setFilterType('VOCAB')" class="type-btn px-2 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" data-type="VOCAB">Vocabulario</button>
+                        <button onclick="setFilterType('GRAMMAR')" class="type-btn px-2 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300" data-type="GRAMMAR">Gramática</button>
+                    </div>
+                </div>
+
+                <!-- Category Select -->
+                <div>
+                    <label for="category-select" class="block text-sm font-semibold mb-2">Tema / Categoría</label>
+                    <select id="category-select" onchange="setFilterCategory(this.value)" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
+                        <option value="ALL">Todas las Categorías</option>
+                        <!-- Dynamic options loaded via JS -->
+                    </select>
+                </div>
+
+                <!-- Progress indicator in category -->
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Progreso de categoría</span>
+                        <span id="category-progress-text">0/0 Dominadas</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                        <div id="category-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- Reset Progress Button -->
+                <button onclick="confirmResetProgress()" class="w-full text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 pt-2 flex items-center justify-center space-x-1 transition">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Reiniciar progreso</span>
+                </button>
+            </div>
+
+            <!-- Color Code Legend -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 text-xs space-y-2">
+                <span class="font-bold text-slate-400 uppercase tracking-wider block mb-2">Leyenda de Colores (Artículos)</span>
+                <div class="grid grid-cols-2 gap-2 font-medium">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                        <span>Der (Masculino)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-600"></span>
+                        <span>Die (Femenino)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                        <span>Das (Neutro)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-amber-600"></span>
+                        <span>Plural (Pl.)</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-3 space-y-6">
+
+            <!-- TAB 1: FLASHCARDS STUDY VIEW -->
+            <div id="view-study" class="space-y-6">
+                
+                <!-- Flashcard Counter & Status Bar -->
+                <div class="flex items-center justify-between px-2">
+                    <div class="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                        Tarjeta <span id="current-card-num" class="text-amber-600 dark:text-amber-400 font-bold">0</span> de <span id="total-cards-num">0</span>
+                    </div>
+                    <div id="card-status-pill" class="text-xs px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                        Pendiente
+                    </div>
+                </div>
+
+                <!-- Flashcard Wrapper with 3D Flip -->
+                <div class="perspective-1000 w-full min-h-[360px] sm:min-h-[400px] cursor-pointer" onclick="flipCard()">
+                    <div id="flashcard-inner" class="transform-style-3d relative w-full h-full min-h-[360px] sm:min-h-[400px] bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 border-slate-200 dark:border-slate-700 p-6 sm:p-10 flex flex-col justify-between">
+                        
+                        <!-- CARD FRONT -->
+                        <div id="card-front" class="backface-hidden absolute inset-0 p-6 sm:p-10 flex flex-col justify-between rounded-3xl">
+                            <!-- Top Info: Level badge & TTS Button -->
+                            <div class="flex items-center justify-between w-full">
+                                <span id="card-front-level" class="text-xs font-extrabold tracking-wider px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                                    A1 • VOCAB
+                                </span>
+                                <button onclick="event.stopPropagation(); speakGermanText()" class="p-3 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full hover:scale-110 active:scale-95 transition shadow-sm" title="Escuchar Pronunciación">
+                                    <i class="fa-solid fa-volume-high text-lg"></i>
+                                </button>
+                            </div>
+
+                            <!-- Middle Main Text -->
+                            <div class="text-center my-auto py-6 space-y-3">
+                                <div id="card-front-category" class="text-xs uppercase font-bold tracking-widest text-slate-400">
+                                    Salud & Medicina
+                                </div>
+                                <h2 id="card-front-main" class="text-3xl sm:text-5xl font-black text-slate-800 dark:text-white tracking-tight">
+                                    Der Arzt
+                                </h2>
+                                <p id="card-front-sub" class="text-sm sm:text-base text-slate-500 dark:text-slate-400 italic">
+                                    Plural: die Ärzte
+                                </p>
+                            </div>
+
+                            <!-- Bottom Prompt -->
+                            <div class="text-center w-full text-xs text-slate-400 font-medium flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-rotate text-amber-500"></i>
+                                <span>Haz clic o presiona ESPACIO para voltear</span>
+                            </div>
+                        </div>
+
+                        <!-- CARD BACK -->
+                        <div id="card-back" class="backface-hidden rotate-y-180 absolute inset-0 p-6 sm:p-10 flex flex-col justify-between bg-slate-50 dark:bg-slate-800/95 rounded-3xl">
+                            <!-- Top info -->
+                            <div class="flex items-center justify-between w-full">
+                                <span id="card-back-translation-title" class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    Traducción & Gramática
+                                </span>
+                                <button onclick="event.stopPropagation(); speakGermanText()" class="p-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full hover:scale-105 transition" title="Escuchar Pronunciación">
+                                    <i class="fa-solid fa-volume-high text-sm"></i>
+                                </button>
+                            </div>
+
+                            <!-- Middle Content (Spanish Explanation, Rules, Examples) -->
+                            <div class="my-auto py-4 space-y-4 text-center sm:text-left">
+                                <div>
+                                    <h3 id="card-back-spanish" class="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+                                        El médico
+                                    </h3>
+                                </div>
+
+                                <!-- Example sentence / Context Note in Spanish -->
+                                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                    <div class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center space-x-1">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                        <span>Ejemplo / Regla Clave</span>
+                                    </div>
+                                    <p id="card-back-example-de" class="text-base font-semibold text-slate-800 dark:text-slate-200 italic">
+                                        "Ich muss zum Arzt gehen."
+                                    </p>
+                                    <p id="card-back-example-es" class="text-sm text-slate-600 dark:text-slate-400">
+                                        Tengo que ir al médico.
+                                    </p>
+                                </div>
+
+                                <!-- Extra Grammar Tip / Memory Hack -->
+                                <div id="card-back-grammartip-container" class="text-xs text-slate-500 dark:text-slate-400 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-900/50">
+                                    <span class="font-bold text-amber-700 dark:text-amber-300">Nota Pro:</span>
+                                    <span id="card-back-grammartip">Los sustantivos masculinos terminados en 'en' o de profesiones masculinas llevan el artículo 'der'.</span>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Prompt -->
+                            <div class="text-center w-full text-xs text-slate-400 font-medium">
+                                Selecciona abajo si la dominas para ganar XP
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Action Controls (Spaced Repetition / Mastery Buttons) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button onclick="previousCard()" class="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold rounded-2xl text-slate-700 dark:text-slate-200 text-sm flex items-center justify-center space-x-2 transition shadow-sm">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Anterior</span>
+                    </button>
+
+                    <button onclick="markCardMastery(false)" class="px-4 py-3 bg-red-100 hover:bg-red-200 dark:bg-red-950/50 dark:hover:bg-red-900/70 border border-red-300 dark:border-red-800 font-bold rounded-2xl text-red-700 dark:text-red-300 text-sm flex items-center justify-center space-x-2 transition shadow-sm">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                        <span>Aún no lo sé</span>
+                    </button>
+
+                    <button onclick="markCardMastery(true)" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-2xl text-white text-sm flex items-center justify-center space-x-2 transition shadow-md glow-xp">
+                        <i class="fa-solid fa-check text-lg"></i>
+                        <span>¡Lo sé! (+10 XP)</span>
+                    </button>
+
+                    <button onclick="nextCard()" class="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold rounded-2xl text-slate-700 dark:text-slate-200 text-sm flex items-center justify-center space-x-2 transition shadow-sm">
+                        <span>Siguiente</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: QUIZ / SPEED CHALLENGE VIEW -->
+            <div id="view-quiz" class="hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-6">
+                    
+                    <!-- Quiz Header & Timer -->
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold flex items-center space-x-2">
+                                <i class="fa-solid fa-bolt text-amber-500"></i>
+                                <span>Desafío Quiz Express</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Demuestra tus conocimientos y gana +25 XP por respuesta correcta</p>
+                        </div>
+                        <div id="quiz-timer-box" class="flex items-center space-x-2 bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 px-4 py-2 rounded-2xl font-mono font-bold text-lg">
+                            <i class="fa-solid fa-clock animate-spin"></i>
+                            <span id="quiz-timer">15s</span>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Question Box -->
+                    <div id="quiz-start-screen" class="text-center py-12 space-y-6">
+                        <div class="w-20 h-20 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <div class="max-w-md mx-auto space-y-2">
+                            <h3 class="text-2xl font-bold">¿Listo para el test rápido?</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">
+                                Responderás preguntas tipo test de las tarjetas actuales de tu filtro. Tienes 15 segundos por pregunta.
+                            </p>
+                        </div>
+                        <button onclick="startQuizSession()" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 font-extrabold text-white text-base rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
+                            ¡Comenzar Desafío Ahora!
+                        </button>
+                    </div>
+
+                    <!-- Active Quiz Screen -->
+                    <div id="quiz-active-screen" class="hidden space-y-6">
+                        <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center space-y-2">
+                            <span id="quiz-question-type" class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">¿Qué significa en español?</span>
+                            <h3 id="quiz-question-text" class="text-2xl sm:text-4xl font-extrabold text-slate-800 dark:text-white">
+                                Das Krankenhaus
+                            </h3>
+                        </div>
+
+                        <!-- 4 Options Grid -->
+                        <div id="quiz-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Quiz Result Modal/Screen -->
+                    <div id="quiz-result-screen" class="hidden text-center py-8 space-y-6">
+                        <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">¡Quiz Completado!</h3>
+                        <p class="text-slate-600 dark:text-slate-300">Puntuación obtenida: <span id="quiz-score-text" class="font-extrabold text-amber-500">0 XP</span></p>
+                        <button onclick="startQuizSession()" class="px-6 py-3 bg-amber-500 text-white font-bold rounded-xl shadow">
+                            Intentar de Nuevo
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 3: ACHIEVEMENTS / BADGES VIEW -->
+            <div id="view-badges" class="hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold flex items-center space-x-2">
+                            <i class="fa-solid fa-award text-amber-500"></i>
+                            <span>Medallas y Logros</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Desbloquea insignias a medida que estudias y acumulas XP</p>
+                    </div>
+
+                    <div id="badges-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        /* ==========================================================================
+           DATABANK DE VOCABULARIO Y GRAMÁTICA A1, A2, B1
+           ========================================================================== */
+        const CARDS_DATA = [
+            // --- NIVEL A1 VOCABULARIO & GRAMÁTICA ---
+            {
+                id: "a1-v1",
+                level: "A1",
+                type: "VOCAB",
+                category: "Saludos y Básico",
+                article: "der", // der, die, das, plural, none
+                de: "der Tag",
+                sub: "Plural: die Tage",
+                es: "El día",
+                exampleDe: "Guten Tag! Wie geht es Ihnen?",
+                exampleEs: "¡Buenos días / Buen día! ¿Cómo está usted?",
+                tip: "Los días de la semana y las partes del día (excepto die Nacht) son masculinos ('der')."
+            },
+            {
+                id: "a1-v2",
+                level: "A1",
+                type: "VOCAB",
+                category: "Familia",
+                article: "die",
+                de: "die Mutter",
+                sub: "Plural: die Mütter",
+                es: "La madre",
+                exampleDe: "Meine Mutter kocht sehr gut.",
+                exampleEs: "Mi madre cocina muy bien.",
+                tip: "Los miembros femeninos de la familia casi siempre llevan el artículo 'die'."
+            },
+            {
+                id: "a1-v3",
+                level: "A1",
+                type: "VOCAB",
+                category: "Comida y Bebida",
+                article: "das",
+                de: "das Wasser",
+                sub: "Sustantivo no contable",
+                es: "El agua",
+                exampleDe: "Ich trinke ein Glas Wasser.",
+                exampleEs: "Bebo un vaso de agua.",
+                tip: "Muchas bebidas básicas son neutras ('das Wasser') o masculinas ('der Kaffee', 'der Tee')."
+            },
+            {
+                id: "a1-v4",
+                level: "A1",
+                type: "VOCAB",
+                category: "Casa y Objetos",
+                article: "plural",
+                de: "die Bücher",
+                sub: "Singular: das Buch",
+                es: "Los libros",
+                exampleDe: "Die Bücher liegen auf dem Tisch.",
+                exampleEs: "Los libros están sobre la mesa.",
+                tip: "En plural, TODOS los sustantivos en alemán usan el artículo nominativo 'die'."
+            },
+            {
+                id: "a1-g1",
+                level: "A1",
+                type: "GRAMMAR",
+                category: "Estructura Verbal",
+                article: "grammar",
+                de: "Verbo en Posición 2 (V2)",
+                sub: "Regla de oro de la oración principal",
+                es: "El verbo conjugado siempre va en la segunda posición.",
+                exampleDe: "Heute [1] komme [2] ich später nach Hause.",
+                exampleEs: "Hoy llego más tarde a casa.",
+                tip: "Aunque cambies el elemento que va en 1ª posición para dar énfasis, el verbo NO se mueve de la 2ª posición."
+            },
+            {
+                id: "a1-g2",
+                level: "A1",
+                type: "GRAMMAR",
+                category: "Casos: Akkusativ",
+                article: "grammar",
+                de: "El Objeto Directo (Akkusativ)",
+                sub: "Cambio de artículos",
+                es: "Solo el artículo masculino cambia de DER a DEN.",
+                exampleDe: "Ich habe einen Hund (der Hund -> einen).",
+                exampleEs: "Tengo un perro.",
+                tip: "En acusativo, 'die' y 'das' se quedan exactamente igual. Solo el masculino añade '-en' (der -> den / ein -> einen)."
+            },
+
+            // --- NIVEL A2 VOCABULARIO & GRAMÁTICA ---
+            {
+                id: "a2-v1",
+                level: "A2",
+                type: "VOCAB",
+                category: "Salud y Cuerpo",
+                article: "das",
+                de: "das Krankenhaus",
+                sub: "Plural: die Krankenhäuser",
+                es: "El hospital",
+                exampleDe: "Der Krankenwagen fährt schnell zum Krankenhaus.",
+                exampleEs: "La ambulancia va rápido al hospital.",
+                tip: "Palabras compuestas: el género de la palabra lo determina la ÚLTIMA palabra (das Haus -> das Krankenhaus)."
+            },
+            {
+                id: "a2-v2",
+                level: "A2",
+                type: "VOCAB",
+                category: "Trabajo y Profesión",
+                article: "die",
+                de: "die Bewerbung",
+                sub: "Plural: die Bewerbungen",
+                es: "La solicitud de empleo / Postulación",
+                exampleDe: "Ich habe gestern eine Bewerbung geschickt.",
+                exampleEs: "Ayer envié una solicitud de empleo.",
+                tip: "Todos los sustantivos alemanes que terminan en '-ung' son siempre FEMENINOS ('die')."
+            },
+            {
+                id: "a2-v3",
+                level: "A2",
+                type: "VOCAB",
+                category: "Viajes y Transporte",
+                article: "der",
+                de: "der Bahnhof",
+                sub: "Plural: die Bahnhöfe",
+                es: "La estación de tren",
+                exampleDe: "Wir treffen uns am Bahnhof.",
+                exampleEs: "Nos encontramos en la estación de tren.",
+                tip: "'Der Hof' es masculino, por lo que 'der Bahnhof' conserva el género masculino."
+            },
+            {
+                id: "a2-g1",
+                level: "A2",
+                type: "GRAMMAR",
+                category: "Tiempos Verbales: Perfekt",
+                article: "grammar",
+                de: "Das Perfekt (Pasado Hablado)",
+                sub: "Haben / Sein + Partizip II",
+                es: "Se usa para hablar de acciones pasadas.",
+                exampleDe: "Ich habe Deutsch gelernt. / Ich bin gefahren.",
+                exampleEs: "He aprendido alemán. / He ido en coche.",
+                tip: "Usa 'sein' para verbos de movimiento con cambio de lugar (fahren, gehen) o cambio de estado (einschlafen)."
+            },
+            {
+                id: "a2-g2",
+                level: "A2",
+                type: "GRAMMAR",
+                category: "Preposiciones de Doble Via (Wechselpräpositionen)",
+                article: "grammar",
+                de: "Akkusativ vs. Dativ",
+                sub: "an, auf, hinter, in, neben, über, unter, vor, zwischen",
+                es: "¿Wohin? (¿A dónde? -> Akkusativ) vs. ¿Wo? (¿Dónde? -> Dativ)",
+                exampleDe: "Ich lege das Buch auf den Tisch (Akk). Das Buch liegt auf dem Tisch (Dat).",
+                exampleEs: "Pongo el libro sobre la mesa. El libro está sobre la mesa.",
+                tip: "Movimiento / Cambio de lugar = Acusativo. Ubicación estática / Posición = Dativo."
+            },
+
+            // --- NIVEL B1 VOCABULARIO & GRAMÁTICA ---
+            {
+                id: "b1-v1",
+                level: "B1",
+                type: "VOCAB",
+                category: "Conectores y Discurso",
+                article: "none",
+                de: "obwohl",
+                sub: "Conjunción subordinante (Nebensatz)",
+                es: "Aunque / A pesar de que",
+                exampleDe: "Ich gehe spazieren, obwohl es regnet.",
+                exampleEs: "Voy a dar un paseo aunque está lloviendo.",
+                tip: "Las conjunciones subordinantes como 'obwohl' envían el verbo conjugado al final de la frase."
+            },
+            {
+                id: "b1-v2",
+                level: "B1",
+                type: "VOCAB",
+                category: "Verbos con Preposición",
+                article: "none",
+                de: "warten auf (+ Akkusativ)",
+                sub: "Verbo reflexivo / transitivo",
+                es: "Esperar a algo o a alguien",
+                exampleDe: "Ich warte seit einer Stunde auf den Bus.",
+                exampleEs: "Llevo una hora esperando el autobús.",
+                tip: "En alemán no se dice 'warten für', se dice 'warten auf' más caso Acusativo."
+            },
+            {
+                id: "b1-v3",
+                level: "B1",
+                type: "VOCAB",
+                category: "Medio Ambiente y Sociedad",
+                article: "die",
+                de: "die Umweltverschmutzung",
+                sub: "Sustantivo compuesto",
+                es: "La contaminación ambiental",
+                exampleDe: "Wir müssen die Umweltverschmutzung reduzieren.",
+                exampleEs: "Tenemos que reducir la contaminación ambiental.",
+                tip: "Termina en '-ung', por lo tanto es 'die'. Común en ensayos e exámenes del nivel B1."
+            },
+            {
+                id: "b1-g1",
+                level: "B1",
+                type: "GRAMMAR",
+                category: "Subjuntivo II (Konjunktiv II)",
+                article: "grammar",
+                de: "Wünsche & Höflichkeit (Deseos y Cortesía)",
+                sub: "würde + Infinitivo / hätte / wäre",
+                es: "Expresa hipotéticos: 'me gustaría', 'tendría', 'sería'.",
+                exampleDe: "Wenn ich viel Geld hätte, würde ich eine Reise machen.",
+                exampleEs: "Si tuviera mucho dinero, haría un viaje.",
+                tip: "Clave para las cartas formales y la parte oral del examen Goethe/TELC B1."
+            },
+            {
+                id: "b1-g2",
+                level: "B1",
+                type: "GRAMMAR",
+                category: "Voz Pasiva (Passiv)",
+                article: "grammar",
+                de: "Vorgangspassiv (Pasiva de Proceso)",
+                sub: "werden + Partizip II",
+                es: "Destaca la acción en lugar de la persona que la realiza.",
+                exampleDe: "Das Auto wird in Deutschland repariert.",
+                exampleEs: "El coche es reparado en Alemania.",
+                tip: "Para indicar el agente de la acción pasiva se utiliza la preposición 'von' + Dativo."
+            }
+        ];
+
+        // Badges / Achievements list
+        const BADGES_DEFINITIONS = [
+            { id: "badge_first", title: "Primer Paso", desc: "Completa tu primera tarjeta", icon: "fa-seedling", reqXP: 10 },
+            { id: "badge_50xp", title: "Estudiante Atento", desc: "Alcanza los 50 XP", icon: "fa-book-open", reqXP: 50 },
+            { id: "badge_200xp", title: "Políglota en Proceso", desc: "Alcanza los 200 XP", icon: "fa-graduation-cap", reqXP: 200 },
+            { id: "badge_500xp", title: "Experto Alemán", desc: "Alcanza los 500 XP", icon: "fa-crown", reqXP: 500 },
+            { id: "badge_streak", title: "Constancia", desc: "Mantén una racha activa", icon: "fa-fire", reqXP: 1 }
+        ];
+
+        // State
+        let state = {
+            xp: 0,
+            streak: 1,
+            lastStudyDate: new Date().toISOString().slice(0, 10),
+            masteredCards: [], // IDs of mastered cards
+            currentFilter: {
+                level: 'ALL',
+                type: 'ALL',
+                category: 'ALL'
+            },
+            currentCardIndex: 0,
+            isFlipped: false
+        };
+
+        // Quiz State
+        let quizState = {
+            active: false,
+            timer: 15,
+            interval: null,
+            currentQuestion: null,
+            score: 0
+        };
+
+        window.onload = function() {
+            loadStateFromStorage();
+            populateCategoryDropdown();
+            updateUI();
+            setupKeyboardShortcuts();
+        };
+
+        function loadStateFromStorage() {
+            const saved = localStorage.getItem('deutschflash_state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    state.xp = parsed.xp || 0;
+                    state.streak = parsed.streak || 1;
+                    state.masteredCards = parsed.masteredCards || [];
+                    state.lastStudyDate = parsed.lastStudyDate || new Date().toISOString().slice(0, 10);
+                    
+                    // Check streak logic (if last study was yesterday vs today vs older)
+                    const today = new Date().toISOString().slice(0, 10);
+                    if (state.lastStudyDate !== today) {
+                        const lastDate = new Date(state.lastStudyDate);
+                        const currentDate = new Date(today);
+                        const diffTime = Math.abs(currentDate - lastDate);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays > 1) {
+                            state.streak = 1; // Reset streak if missed more than 1 day
+                        } else if (diffDays === 1) {
+                            state.streak += 1; // Increment streak
+                        }
+                        state.lastStudyDate = today;
+                        saveState();
+                    }
+                } catch(e) {
+                    console.error("Error loading state", e);
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('deutschflash_state', JSON.stringify(state));
+        }
+
+        function getFilteredCards() {
+            return CARDS_DATA.filter(card => {
+                const matchLevel = state.currentFilter.level === 'ALL' || card.level === state.currentFilter.level;
+                const matchType = state.currentFilter.type === 'ALL' || card.type === state.currentFilter.type;
+                const matchCategory = state.currentFilter.category === 'ALL' || card.category === state.currentFilter.category;
+                return matchLevel && matchType && matchCategory;
+            });
+        }
+
+        function populateCategoryDropdown() {
+            const select = document.getElementById('category-select');
+            select.innerHTML = '<option value="ALL">Todas las Categorías</option>';
+            
+            const categories = [...new Set(CARDS_DATA.map(c => c.category))];
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
+            });
+        }
+
+        function setFilterLevel(level) {
+            state.currentFilter.level = level;
+            state.currentCardIndex = 0;
+            state.isFlipped = false;
+            
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                if (btn.dataset.level === level) {
+                    btn.className = "level-btn active-level py-1.5 rounded-lg text-xs font-bold transition shadow-sm bg-white dark:bg-slate-700 text-slate-800 dark:text-white";
+                } else {
+                    btn.className = "level-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white";
+                }
+            });
+            updateUI();
+        }
+
+        function setFilterType(type) {
+            state.currentFilter.type = type;
+            state.currentCardIndex = 0;
+            state.isFlipped = false;
+
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                if (btn.dataset.type === type) {
+                    btn.className = "type-btn active-type px-2 py-1.5 rounded-lg text-xs font-medium border border-amber-500 bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300";
+                } else {
+                    btn.className = "type-btn px-2 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300";
+                }
+            });
+            updateUI();
+        }
+
+        function setFilterCategory(category) {
+            state.currentFilter.category = category;
+            state.currentCardIndex = 0;
+            state.isFlipped = false;
+            updateUI();
+        }
+
+        function updateUI() {
+            const cards = getFilteredCards();
+            
+            // Header stats
+            document.getElementById('xp-display').textContent = `${state.xp} XP`;
+            document.getElementById('streak-count').textContent = state.streak;
+            
+            // Player level based on XP
+            let playerTitle = "Anfänger (A1)";
+            if (state.xp >= 300) playerTitle = "Experte (B1)";
+            else if (state.xp >= 100) playerTitle = "Fortgeschrittener (A2)";
+            document.getElementById('player-level').textContent = playerTitle;
+
+            // Badges View update
+            renderBadges();
+
+            // Flashcards navigation
+            document.getElementById('cards-count-badge').textContent = cards.length;
+            document.getElementById('total-cards-num').textContent = cards.length;
+
+            if (cards.length === 0) {
+                renderEmptyCardState();
+                return;
+            }
+
+            if (state.currentCardIndex >= cards.length) {
+                state.currentCardIndex = 0;
+            }
+
+            document.getElementById('current-card-num').textContent = state.currentCardIndex + 1;
+
+            const card = cards[state.currentCardIndex];
+            renderFlashcardData(card);
+
+            // Update category progress
+            const masteredInFilter = cards.filter(c => state.masteredCards.includes(c.id)).length;
+            document.getElementById('category-progress-text').textContent = `${masteredInFilter}/${cards.length} Dominadas`;
+            const pct = cards.length > 0 ? (masteredInFilter / cards.length) * 100 : 0;
+            document.getElementById('category-progress-bar').style.width = `${pct}%`;
+        }
+
+        function renderFlashcardData(card) {
+            const inner = document.getElementById('flashcard-inner');
+            
+            // Ensure card is un-flipped on load of new card
+            if (state.isFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+
+            // Article color styling border & badge
+            let borderClass = "border-slate-200 dark:border-slate-700";
+            let colorBadgeClass = "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+
+            if (card.article === 'der') {
+                borderClass = "border-blue-500/40 shadow-blue-500/5";
+                colorBadgeClass = "bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300";
+            } else if (card.article === 'die') {
+                borderClass = "border-red-500/40 shadow-red-500/5";
+                colorBadgeClass = "bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-300";
+            } else if (card.article === 'das') {
+                borderClass = "border-emerald-500/40 shadow-emerald-500/5";
+                colorBadgeClass = "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-300";
+            } else if (card.article === 'plural') {
+                borderClass = "border-amber-500/40 shadow-amber-500/5";
+                colorBadgeClass = "bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300";
+            } else if (card.article === 'grammar') {
+                borderClass = "border-purple-500/40 shadow-purple-500/5";
+                colorBadgeClass = "bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300";
+            }
+
+            inner.className = `transform-style-3d relative w-full h-full min-h-[360px] sm:min-h-[400px] bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 ${borderClass} p-6 sm:p-10 flex flex-col justify-between transition-all`;
+
+            // Front Content
+            document.getElementById('card-front-level').className = `text-xs font-extrabold tracking-wider px-3 py-1 rounded-full ${colorBadgeClass}`;
+            document.getElementById('card-front-level').textContent = `${card.level} • ${card.type}`;
+            document.getElementById('card-front-category').textContent = card.category;
+            document.getElementById('card-front-main').textContent = card.de;
+            document.getElementById('card-front-sub').textContent = card.sub || "";
+
+            // Back Content
+            document.getElementById('card-back-spanish').textContent = card.es;
+            document.getElementById('card-back-example-de').textContent = card.exampleDe ? `"${card.exampleDe}"` : "";
+            document.getElementById('card-back-example-es').textContent = card.exampleEs || "";
+            
+            const tipContainer = document.getElementById('card-back-grammartip-container');
+            if (card.tip) {
+                tipContainer.classList.remove('hidden');
+                document.getElementById('card-back-grammartip').textContent = card.tip;
+            } else {
+                tipContainer.classList.add('hidden');
+            }
+
+            // Mastery Status Pill
+            const isMastered = state.masteredCards.includes(card.id);
+            const statusPill = document.getElementById('card-status-pill');
+            if (isMastered) {
+                statusPill.textContent = "¡Dominada!";
+                statusPill.className = "text-xs px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-300 font-bold flex items-center space-x-1";
+            } else {
+                statusPill.textContent = "Pendiente de repaso";
+                statusPill.className = "text-xs px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium";
+            }
+        }
+
+        function renderEmptyCardState() {
+            document.getElementById('card-front-main').textContent = "No hay tarjetas";
+            document.getElementById('card-front-sub').textContent = "Prueba cambiando los filtros de la izquierda";
+            document.getElementById('card-back-spanish').textContent = "Sin resultados";
+        }
+
+        function flipCard() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            
+            state.isFlipped = !state.isFlipped;
+            const inner = document.getElementById('flashcard-inner');
+            if (state.isFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            
+            state.isFlipped = false;
+            state.currentCardIndex = (state.currentCardIndex + 1) % cards.length;
+            updateUI();
+        }
+
+        function previousCard() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+
+            state.isFlipped = false;
+            state.currentCardIndex = (state.currentCardIndex - 1 + cards.length) % cards.length;
+            updateUI();
+        }
+
+        function markCardMastery(known) {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+
+            const card = cards[state.currentCardIndex];
+            const masteredIndex = state.masteredCards.indexOf(card.id);
+
+            if (known) {
+                if (masteredIndex === -1) {
+                    state.masteredCards.push(card.id);
+                    state.xp += 10; // Award XP
+                }
+            } else {
+                if (masteredIndex !== -1) {
+                    state.masteredCards.splice(masteredIndex, 1);
+                }
+            }
+
+            saveState();
+            nextCard();
+        }
+
+        // Web Speech API Pronunciation (German - de-DE)
+        function speakGermanText() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            const card = cards[state.currentCardIndex];
+
+            if ('speechSynthesis' in window) {
+                // Cancel previous speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(card.de);
+                utterance.lang = 'de-DE';
+                utterance.rate = 0.9; // Slightly slower for language learners
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Tu navegador no soporta síntesis de voz Web Speech API.");
+            }
+        }
+
+        function startQuizSession() {
+            const cards = getFilteredCards();
+            if (cards.length < 2) {
+                alert("Necesitas al menos 2 tarjetas en el filtro actual para jugar al Quiz.");
+                return;
+            }
+
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-active-screen').classList.remove('hidden');
+
+            quizState.active = true;
+            quizState.score = 0;
+            nextQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            const cards = getFilteredCards();
+            if (!quizState.active || cards.length === 0) return;
+
+            // Pick random target card
+            const randomIndex = Math.floor(Math.random() * cards.length);
+            const target = cards[randomIndex];
+            quizState.currentQuestion = target;
+
+            document.getElementById('quiz-question-text').textContent = target.de;
+
+            // Generate 4 multiple choices (1 correct, 3 distractors)
+            let choices = [target.es];
+            let otherCards = CARDS_DATA.filter(c => c.id !== target.id);
+            
+            while (choices.length < 4 && otherCards.length > 0) {
+                const randOther = otherCards[Math.floor(Math.random() * otherCards.length)];
+                if (!choices.includes(randOther.es)) {
+                    choices.push(randOther.es);
+                }
+            }
+            
+            // Shuffle choices
+            choices.sort(() => Math.random() - 0.5);
+
+            // Render buttons
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
+
+            choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl font-semibold text-sm transition transform active:scale-98 shadow-sm flex items-center justify-between";
+                btn.innerHTML = `<span>${choice}</span> <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>`;
+                btn.onclick = () => handleQuizAnswer(choice, target.es, btn);
+                container.appendChild(btn);
+            });
+
+            // Start 15s timer
+            clearInterval(quizState.interval);
+            quizState.timer = 15;
+            document.getElementById('quiz-timer').textContent = `${quizState.timer}s`;
+
+            quizState.interval = setInterval(() => {
+                quizState.timer--;
+                document.getElementById('quiz-timer').textContent = `${quizState.timer}s`;
+                
+                if (quizState.timer <= 0) {
+                    clearInterval(quizState.interval);
+                    handleQuizAnswer(null, target.es, null); // Timeout
+                }
+            }, 1000);
+        }
+
+        function handleQuizAnswer(selected, correct, buttonEl) {
+            clearInterval(quizState.interval);
+
+            const allBtns = document.querySelectorAll('#quiz-options-container button');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                if (buttonEl) {
+                    buttonEl.classList.remove('border-slate-200', 'dark:border-slate-700');
+                    buttonEl.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+                }
+                state.xp += 25; // Extra XP for Quiz
+                quizState.score += 25;
+                saveState();
+                updateUI();
+            } else {
+                if (buttonEl) {
+                    buttonEl.classList.remove('border-slate-200', 'dark:border-slate-700');
+                    buttonEl.classList.add('bg-red-500', 'text-white', 'border-red-600');
+                }
+                // Highlight correct one
+                allBtns.forEach(b => {
+                    if (b.textContent.includes(correct)) {
+                        b.classList.add('bg-emerald-100', 'dark:bg-emerald-900', 'border-emerald-500');
+                    }
+                });
+            }
+
+            // Wait 1.5s then next question or finish
+            setTimeout(() => {
+                nextQuizQuestion();
+            }, 1400);
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badges-grid');
+            container.innerHTML = '';
+
+            BADGES_DEFINITIONS.forEach(badge => {
+                const unlocked = state.xp >= badge.reqXP;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border ${unlocked ? 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800' : 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 opacity-60'} flex items-start space-x-3 transition`;
+                
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 ${unlocked ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}">
+                        <i class="fa-solid ${badge.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">${badge.title}</h4>
+                            ${unlocked ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">Consolidado</span>' : ''}
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${badge.desc}</p>
+                        <span class="text-[10px] font-semibold text-amber-600 dark:text-amber-400 block mt-2">Requisito: ${badge.reqXP} XP</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function switchMainTab(tabName) {
+            document.getElementById('view-study').classList.add('hidden');
+            document.getElementById('view-quiz').classList.add('hidden');
+            document.getElementById('view-badges').classList.add('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition";
+            });
+
+            if (tabName === 'study') {
+                document.getElementById('view-study').classList.remove('hidden');
+                document.getElementById('tab-study').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition bg-amber-500 text-white shadow-sm";
+            } else if (tabName === 'quiz') {
+                document.getElementById('view-quiz').classList.remove('hidden');
+                document.getElementById('tab-quiz').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition bg-amber-500 text-white shadow-sm";
+            } else if (tabName === 'badges') {
+                document.getElementById('view-badges').classList.remove('hidden');
+                document.getElementById('tab-badges').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition bg-amber-500 text-white shadow-sm";
+            }
+        }
+
+        // Theme Toggle (Dark / Light)
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Keyboard Shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Ignore keypresses if in inputs or select dropdowns
+                if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.code === 'ArrowRight') {
+                    nextCard();
+                } else if (e.code === 'ArrowLeft') {
+                    previousCard();
+                } else if (e.key === '1') {
+                    markCardMastery(false);
+                } else if (e.key === '2') {
+                    markCardMastery(true);
+                }
+            });
+        }
+
+        function confirmResetProgress() {
+            if (confirm("¿Estás seguro de que deseas reiniciar todo tu progreso de XP y tarjetas dominadas?")) {
+                state.xp = 0;
+                state.masteredCards = [];
+                saveState();
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
