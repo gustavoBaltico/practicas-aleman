@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuaderno de Alemán - Deutsch Lernen</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --primary-color: #0d6efd;
+            --border-color: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: #111;
+        }
+
+        p.subtitle {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .category-card h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .link-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .link-list li {
+            margin-bottom: 10px;
+        }
+
+        .link-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            background-color: #f1f3f5;
+        }
+
+        .link-list a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🇩🇪 Mi Cuaderno de Alemán</h1>
+        <p class="subtitle">Índice principal de contenidos, ejercicios y recursos</p>
+    </header>
+
+    <main class="container">
+        
+        <!-- SECCIÓN 1: GRAMÁTICA -->
+        <section class="category-card">
+            <h2>📘 Gramática (Grammatik)</h2>
+            <ul class="link-list">
+                <li><a href="gramatica/articulos.html">Artículos (Bestimmter & Unbestimmter Artikel)</a></li>
+                <li><a href="gramatica/casos-nominativ-akkusativ.html">Casos: Nominativ & Akkusativ</a></li>
+                <li><a href="gramatica/verbos-modal.html">Verbos Modales (Modalverben)</a></li>
+                <!-- Agrega más enlaces aquí -->
+            </ul>
+        </section>
+
+        <!-- SECCIÓN 2: VOCABULARIO -->
+        <section class="category-card">
+            <h2>📙 Vocabulario (Wortschatz)</h2>
+            <ul class="link-list">
+                <li><a href="vocabulario/familia.html">La Familia (Die Familie)</a></li>
+                <li><a href="vocabulario/comida.html">Comida y Bebida (Essen und Trinken)</a></li>
+                <li><a href="vocabulario/rutina.html">Rutina diaria (Tagesablauf)</a></li>
+                <!-- Agrega más enlaces aquí -->
+            </ul>
+        </section>
+
+        <!-- SECCIÓN 3: PRÁCTICAS Y ACTIVIDADES -->
+        <section class="category-card">
+            <h2>✏️ Prácticas y Actividades</h2>
+            <ul class="link-list">
+                <li><a href="practicas/ejercicios-conjugacion.html">Ejercicios de Conjugación</a></li>
+                <li><a href="practicas/test-vocabulario.html">Quiz de Vocabulario</a></li>
+                <li><a href="practicas/traduccion.html">Frases para Traducir</a></li>
+                <!-- Agrega más enlaces aquí -->
+            </ul>
+        </section>
+
+        <!-- SECCIÓN 4: LECTURA Y ESCUCHA -->
+        <section class="category-card">
+            <h2>🎧 Lectura y Escucha (Lesen & Hören)</h2>
+            <ul class="link-list">
+                <li><a href="lectura/lecturas-a1.html">Textos Cortos A1</a></li>
+                <li><a href="lectura/transcripciones-audio.html">Transcripciones de Podcasts</a></li>
+                <!-- Agrega más enlaces aquí -->
+            </ul>
+        </section>
+
+        <!-- SECCIÓN 5: NOTAS Y RECURSOS -->
+        <section class="category-card">
+            <h2>📌 Recursos y Notas</h2>
+            <ul class="link-list">
+                <li><a href="recursos/enlaces-utiles.html">Páginas web y diccionarios</a></li>
+                <li><a href="recursos/chuleta-recapitulatoria.html">Resumen rápido de reglas</a></li>
+                <!-- Agrega más enlaces aquí -->
+            </ul>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Proyecto personal de aprendizaje de alemán — Alojado en GitHub Pages</p>
+    </footer>
+
+</body>
+</html>
