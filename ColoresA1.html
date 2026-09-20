@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alemán A1: Los Colores (Die Farben) | Flashcards & Gamificación</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* 3D Flip Card Effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+
+        .color-card-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-500 via-amber-400 to-blue-500 text-white flex items-center justify-center font-black text-xl shadow-md">
+                    <i class="fa-solid fa-palette"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight leading-none bg-gradient-to-r from-red-500 via-amber-500 to-blue-600 bg-clip-text text-transparent">
+                        FarbenA1
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Alemán A1 • Los Colores & Gramática</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar (XP, Streak, Level) -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                
+                <!-- Streak -->
+                <div class="flex items-center space-x-1.5 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold" title="Racha de estudio">
+                    <i class="fa-solid fa-fire text-orange-500 animate-bounce"></i>
+                    <span id="streak-count">1</span>
+                    <span class="hidden sm:inline text-xs font-normal">días</span>
+                </div>
+
+                <!-- Level & XP -->
+                <div class="flex items-center space-x-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold">
+                    <i class="fa-solid fa-crown text-amber-500"></i>
+                    <span id="player-level" class="hidden sm:inline">Farben-Neuling</span>
+                    <span class="text-xs bg-amber-200 dark:bg-amber-800/80 px-2 py-0.5 rounded-full text-amber-900 dark:text-amber-100" id="xp-display">0 XP</span>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <button id="theme-toggle" class="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+                    <i class="fa-solid fa-sun text-lg hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-1 space-y-6">
+            
+            <!-- Navigation Tabs Buttons -->
+            <div class="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col space-y-1">
+                <button id="tab-study" onclick="switchMainTab('study')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm transition bg-amber-500 text-white shadow-sm">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-clone"></i>
+                        <span>Flashcards</span>
+                    </span>
+                    <span class="text-xs px-2 py-0.5 bg-black/20 rounded-full" id="cards-count-badge">13</span>
+                </button>
+
+                <button id="tab-grammar" onclick="switchMainTab('grammar')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Gramática & Reglas</span>
+                    </span>
+                    <span class="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded font-bold uppercase text-[10px]">A1</span>
+                </button>
+
+                <button id="tab-quiz" onclick="switchMainTab('quiz')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>Desafío / Quiz</span>
+                    </span>
+                    <span class="text-xs bg-emerald-500 text-white px-1.5 py-0.5 rounded font-bold uppercase text-[10px]">XP Extra</span>
+                </button>
+
+                <button id="tab-badges" onclick="switchMainTab('badges')" class="tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-award"></i>
+                        <span>Mis Logros</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-xs opacity-50"></i>
+                </button>
+            </div>
+
+            <!-- Global Progress Tracker -->
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Progreso de Colores</h3>
+                    <span id="mastery-percent-text" class="text-xs font-extrabold text-amber-500">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                    <div id="mastery-progress-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+                <p id="mastery-count-text" class="text-xs text-slate-500 dark:text-slate-400">0 de 13 colores dominados</p>
+                
+                <button onclick="confirmResetProgress()" class="w-full text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-center space-x-1 transition">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Reiniciar mi progreso</span>
+                </button>
+            </div>
+
+            <!-- Quick Palette Selector -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Paleta de Selección Rápida</h4>
+                <div id="quick-palette-grid" class="grid grid-cols-5 gap-2">
+                    <!-- Dynamic color swatches -->
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Main Dynamic Content Container -->
+        <section class="lg:col-span-3 space-y-6">
+
+            <!-- VIEW 1: FLASHCARDS STUDY VIEW -->
+            <div id="view-study" class="space-y-6">
+                
+                <!-- Status & Counter Header -->
+                <div class="flex items-center justify-between px-2">
+                    <div class="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                        Color <span id="current-card-num" class="text-amber-600 dark:text-amber-400 font-bold">1</span> de <span id="total-cards-num">13</span>
+                    </div>
+                    <div id="card-status-pill" class="text-xs px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                        Pendiente
+                    </div>
+                </div>
+
+                <!-- Flashcard 3D Interactive Component -->
+                <div class="perspective-1000 w-full min-h-[380px] sm:min-h-[420px] cursor-pointer" onclick="flipCard()">
+                    <div id="flashcard-inner" class="transform-style-3d relative w-full h-full min-h-[380px] sm:min-h-[420px] bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 border-slate-200 dark:border-slate-700 p-6 sm:p-10 flex flex-col justify-between transition-all">
+                        
+                        <!-- FRONT OF CARD -->
+                        <div id="card-front" class="backface-hidden absolute inset-0 p-6 sm:p-10 flex flex-col justify-between rounded-3xl">
+                            <!-- Top: Type Badge & TTS Button -->
+                            <div class="flex items-center justify-between w-full">
+                                <span id="card-front-category" class="text-xs font-extrabold tracking-wider px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+                                    COLOR BÁSICO A1
+                                </span>
+                                <button onclick="event.stopPropagation(); speakGermanText()" class="p-3 bg-amber-500 text-white rounded-full hover:scale-110 active:scale-95 transition shadow-md" title="Escuchar Pronunciación en Alemán">
+                                    <i class="fa-solid fa-volume-high text-lg"></i>
+                                </button>
+                            </div>
+
+                            <!-- Middle Visual Color Swatch & Word -->
+                            <div class="text-center my-auto py-4 space-y-4">
+                                <div id="card-front-swatch" class="w-24 h-24 sm:w-28 sm:w-28 mx-auto rounded-3xl shadow-md border-4 border-white dark:border-slate-700 transition-transform hover:scale-105 flex items-center justify-center">
+                                    <!-- Dynamic Color Swatch -->
+                                </div>
+                                <div>
+                                    <h2 id="card-front-de" class="text-4xl sm:text-6xl font-black tracking-tight text-slate-800 dark:text-white">
+                                        rot
+                                    </h2>
+                                    <p id="card-front-pronunc" class="text-xs sm:text-sm text-slate-400 mt-1 italic">
+                                        [rot]
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Flip Indicator -->
+                            <div class="text-center w-full text-xs text-slate-400 font-medium flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-rotate text-amber-500"></i>
+                                <span>Haz clic o presiona ESPACIO para ver traducción y regla</span>
+                            </div>
+                        </div>
+
+                        <!-- BACK OF CARD -->
+                        <div id="card-back" class="backface-hidden rotate-y-180 absolute inset-0 p-6 sm:p-10 flex flex-col justify-between bg-slate-50 dark:bg-slate-800/95 rounded-3xl">
+                            <!-- Top Info -->
+                            <div class="flex items-center justify-between w-full">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    Español & Gramática A1
+                                </span>
+                                <button onclick="event.stopPropagation(); speakGermanText()" class="p-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full hover:scale-105 transition" title="Escuchar Pronunciación">
+                                    <i class="fa-solid fa-volume-high text-sm"></i>
+                                </button>
+                            </div>
+
+                            <!-- Middle Translation & Examples -->
+                            <div class="my-auto py-2 space-y-4">
+                                <div class="text-center sm:text-left">
+                                    <span class="text-xs font-bold text-amber-500 uppercase">Traducción</span>
+                                    <h3 id="card-back-es" class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                                        Rojo
+                                    </h3>
+                                </div>
+
+                                <!-- Example Sentences Box -->
+                                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                    <div class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-quote-left"></i>
+                                        <span>Ejemplos en Frases A1</span>
+                                    </div>
+                                    <div class="space-y-1 text-sm">
+                                        <p id="card-back-ex1-de" class="font-bold text-slate-800 dark:text-slate-200">
+                                            "Der Apfel ist rot."
+                                        </p>
+                                        <p id="card-back-ex1-es" class="text-xs text-slate-500 dark:text-slate-400">
+                                            La manzana es roja. (Sin declinar)
+                                        </p>
+                                    </div>
+                                    <div class="border-t border-slate-100 dark:border-slate-800 pt-1 space-y-1 text-sm">
+                                        <p id="card-back-ex2-de" class="font-bold text-slate-800 dark:text-slate-200">
+                                            "Das ist ein roter Apfel."
+                                        </p>
+                                        <p id="card-back-ex2-es" class="text-xs text-slate-500 dark:text-slate-400">
+                                            Es una manzana roja. (Declinado: roter)
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Grammar Tip Note -->
+                                <div class="text-xs text-slate-600 dark:text-slate-300 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-900/50">
+                                    <span class="font-bold text-amber-700 dark:text-amber-300">Nota Gramatical:</span>
+                                    <span id="card-back-grammartip">Cuando el color va después de 'ist', no cambia.</span>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Prompt -->
+                            <div class="text-center w-full text-xs text-slate-400 font-medium">
+                                Marca si la dominas para ganar XP
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button onclick="previousCard()" class="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold rounded-2xl text-slate-700 dark:text-slate-200 text-sm flex items-center justify-center space-x-2 transition shadow-sm">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Anterior</span>
+                    </button>
+
+                    <button onclick="markCardMastery(false)" class="px-4 py-3 bg-red-100 hover:bg-red-200 dark:bg-red-950/50 dark:hover:bg-red-900/70 border border-red-300 dark:border-red-800 font-bold rounded-2xl text-red-700 dark:text-red-300 text-sm flex items-center justify-center space-x-2 transition shadow-sm">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                        <span>Aún no lo sé</span>
+                    </button>
+
+                    <button onclick="markCardMastery(true)" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-2xl text-white text-sm flex items-center justify-center space-x-2 transition shadow-md">
+                        <i class="fa-solid fa-check text-lg"></i>
+                        <span>¡Lo sé! (+10 XP)</span>
+                    </button>
+
+                    <button onclick="nextCard()" class="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold rounded-2xl text-slate-700 dark:text-slate-200 text-sm flex items-center justify-center space-x-2 transition shadow-sm">
+                        <span>Siguiente</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- VIEW 2: GRAMMAR & RULES VIEW -->
+            <div id="view-grammar" class="hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-8">
+                    
+                    <!-- Grammar Title Header -->
+                    <div class="border-b border-slate-100 dark:border-slate-700 pb-4">
+                        <span class="text-xs font-bold uppercase tracking-widest text-amber-500">Gramática Esencial Nivel A1</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
+                            Uso y Declinación de los Colores en Alemán
+                        </h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                            Aprende cuándo los colores cambian de terminación y cuándo se quedan invariables.
+                        </p>
+                    </div>
+
+                    <!-- Rule 1: Predicate (Invariable) -->
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black flex items-center justify-center text-sm shadow">1</span>
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Colores como Predicado (Después del verbo 'sein')</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Cuando el color va **después** de un verbo como <code class="bg-amber-100 dark:bg-amber-950/80 px-1.5 py-0.5 rounded text-amber-800 dark:text-amber-300 font-bold">ist</code> o <code class="bg-amber-100 dark:bg-amber-950/80 px-1.5 py-0.5 rounded text-amber-800 dark:text-amber-300 font-bold">sind</code>, **NO cambia nunca**. Se usa la forma básica.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <p class="font-bold text-slate-800 dark:text-slate-200">Der Tisch ist braun.</p>
+                                <p class="text-slate-400">La mesa es marrón.</p>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <p class="font-bold text-slate-800 dark:text-slate-200">Die Blume ist gelb.</p>
+                                <p class="text-slate-400">La flor es amarilla.</p>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <p class="font-bold text-slate-800 dark:text-slate-200">Das Auto ist rot.</p>
+                                <p class="text-slate-400">El coche es rojo.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rule 2: Attributive (Declension) -->
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow">2</span>
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Colores Delante del Sustantivo (Adjetivo Atributivo)</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Cuando el color se coloca **delante del sustantivo**, actúa como un adjetivo y se **declina** añadiendo una terminación según el género y el artículo (Nominativ A1):
+                        </p>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto pt-2">
+                            <table class="w-full text-xs text-left text-slate-600 dark:text-slate-300 border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white uppercase font-bold">
+                                        <th class="p-2.5 rounded-tl-lg">Género</th>
+                                        <th class="p-2.5">Artículo Indefinido (Ein)</th>
+                                        <th class="p-2.5">Artículo Definido (Der/Die/Das)</th>
+                                        <th class="p-2.5 rounded-tr-lg">Ejemplo</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-blue-600 dark:text-blue-400">Masculino (der)</td>
+                                        <td class="p-2.5">ein rot<span class="text-red-500 font-bold">er</span> Ball</td>
+                                        <td class="p-2.5">der rot<span class="text-red-500 font-bold">e</span> Ball</td>
+                                        <td class="p-2.5 italic">un balón rojo / el balón rojo</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-red-600 dark:text-red-400">Femenino (die)</td>
+                                        <td class="p-2.5">eine blau<span class="text-red-500 font-bold">e</span> Blume</td>
+                                        <td class="p-2.5">die blau<span class="text-red-500 font-bold">e</span> Blume</td>
+                                        <td class="p-2.5 italic">una flor azul / la flor azul</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-emerald-600 dark:text-emerald-400">Neutro (das)</td>
+                                        <td class="p-2.5">ein grün<span class="text-red-500 font-bold">es</span> Buch</td>
+                                        <td class="p-2.5">das grün<span class="text-red-500 font-bold">e</span> Buch</td>
+                                        <td class="p-2.5 italic">un libro verde / el libro verde</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-amber-600 dark:text-amber-400">Plural (die)</td>
+                                        <td class="p-2.5">gelb<span class="text-red-500 font-bold">e</span> Socken</td>
+                                        <td class="p-2.5">die gelb<span class="text-red-500 font-bold">en</span> Socken</td>
+                                        <td class="p-2.5 italic">calcetines amarillos</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Rule 3: Tones & Questions -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Tones -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <h4 class="font-bold text-amber-600 dark:text-amber-400 text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-sun"></i>
+                                <span>Tonos: Claro (hell-) y Oscuro (dunkel-)</span>
+                            </h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Para indicar tonalidad en alemán se antepone **hell-** (claro) o **dunkel-** (oscuro) directamente a la palabra:
+                            </p>
+                            <ul class="text-xs space-y-1 font-semibold text-slate-700 dark:text-slate-200 pl-2 border-l-2 border-amber-400">
+                                <li>• <span class="text-sky-500">hellblau</span> = azul claro</li>
+                                <li>• <span class="text-blue-900 dark:text-blue-300">dunkelblau</span> = azul oscuro</li>
+                                <li>• <span class="text-emerald-700">dunkelgrün</span> = verde oscuro</li>
+                            </ul>
+                        </div>
+
+                        <!-- Questions -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <h4 class="font-bold text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-comments"></i>
+                                <span>Preguntar por el color (A1)</span>
+                            </h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-300">
+                                Utiliza la estructura clave con **Welche Farbe...?**:
+                            </p>
+                            <div class="bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs space-y-1">
+                                <p class="font-bold text-slate-800 dark:text-slate-100">"Welche Farbe hat die Sonne?"</p>
+                                <p class="text-slate-400">¿De qué color es el sol? (Die Sonne ist gelb)</p>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs space-y-1">
+                                <p class="font-bold text-slate-800 dark:text-slate-100">"Welche Farbe ist das?"</p>
+                                <p class="text-slate-400">¿Qué color es este? (Das ist Blau)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VIEW 3: QUIZ / CHALLENGE VIEW -->
+            <div id="view-quiz" class="hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-6">
+                    
+                    <!-- Header -->
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
+                        <div>
+                            <h2 class="text-xl font-extrabold flex items-center space-x-2 text-slate-800 dark:text-white">
+                                <i class="fa-solid fa-bolt text-amber-500"></i>
+                                <span>Desafío de Colores & Gramática</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Pon a prueba tu vocabulario y terminaciones adjetivas A1</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <!-- Multiplier Badge -->
+                            <div id="quiz-combo-badge" class="bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 px-3 py-1 rounded-full text-xs font-black flex items-center space-x-1">
+                                <i class="fa-solid fa-fire text-amber-500"></i>
+                                <span>Combo x<span id="quiz-combo-val">1</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Start Banner -->
+                    <div id="quiz-start-screen" class="text-center py-10 space-y-6">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-red-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <div class="max-w-md mx-auto space-y-2">
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white">¿Listo para practicar los colores?</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">
+                                Responderás preguntas de identificación visual, traducción y terminaciones adjetivas A1. ¡Gana +20 XP por acierto!
+                            </p>
+                        </div>
+                        <button onclick="startQuizSession()" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 font-extrabold text-white text-base rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
+                            ¡Comenzar Quiz Ahora!
+                        </button>
+                    </div>
+
+                    <!-- Active Question Box -->
+                    <div id="quiz-active-screen" class="hidden space-y-6">
+                        
+                        <!-- Question Prompt -->
+                        <div class="bg-slate-50 dark:bg-slate-900/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center space-y-3 relative overflow-hidden">
+                            
+                            <span id="quiz-q-type" class="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                                Identificación de Color
+                            </span>
+
+                            <!-- Visual Sample (If applicable) -->
+                            <div id="quiz-visual-sample" class="w-16 h-16 mx-auto rounded-2xl border-2 border-white shadow-md"></div>
+
+                            <h3 id="quiz-q-text" class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white">
+                                ¿Cómo se dice "Rojo" en alemán?
+                            </h3>
+
+                            <p id="quiz-q-sub" class="text-xs text-slate-400 italic"></p>
+                        </div>
+
+                        <!-- 4 Choice Options -->
+                        <div id="quiz-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Dynamic choices generated by JS -->
+                        </div>
+
+                        <!-- Result Feedback Box -->
+                        <div id="quiz-feedback-box" class="hidden p-4 rounded-2xl text-center font-bold text-sm"></div>
+
+                    </div>
+
+                    <!-- Quiz Summary Screen -->
+                    <div id="quiz-result-screen" class="hidden text-center py-8 space-y-6">
+                        <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white">¡Sesión de Quiz Completada!</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">¡Excelente trabajo reforzando la gramática A1 de los colores!</p>
+                        </div>
+                        
+                        <div class="inline-block bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-6 py-3 rounded-2xl">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block font-semibold">PUNTOS GANADOS</span>
+                            <span id="quiz-score-text" class="text-3xl font-black text-amber-500">+0 XP</span>
+                        </div>
+
+                        <div>
+                            <button onclick="startQuizSession()" class="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl shadow">
+                                Jugar Otra Ronda
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VIEW 4: ACHIEVEMENTS & BADGES VIEW -->
+            <div id="view-badges" class="hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold flex items-center space-x-2 text-slate-800 dark:text-white">
+                            <i class="fa-solid fa-award text-amber-500"></i>
+                            <span>Medallas y Logros de Colores</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Completa objetivos para desbloquear insignias especiales</p>
+                    </div>
+
+                    <div id="badges-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Dynamic Badges generated via JS -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        /* ==========================================================================
+           DATA: A1 GERMAN COLORS & GRAMMAR DATASET
+           ========================================================================== */
+        const COLORS_DATA = [
+            {
+                id: "rot",
+                de: "rot",
+                pronunc: "[rot]",
+                es: "Rojo",
+                hex: "#ef4444",
+                textColor: "#ffffff",
+                ex1De: "Der Apfel ist rot.",
+                ex1Es: "La manzana es roja. (Predicado: no cambia)",
+                ex2De: "Das ist ein roter Apfel.",
+                ex2Es: "Es una manzana roja. (Masculino: -er)",
+                tip: "En acusativo o nominativo masculino atributo lleva '-er': ein roter Apfel."
+            },
+            {
+                id: "blau",
+                de: "blau",
+                pronunc: "[blau]",
+                es: "Azul",
+                hex: "#3b82f6",
+                textColor: "#ffffff",
+                ex1De: "Der Himmel ist blau.",
+                ex1Es: "El cielo es azul.",
+                ex2De: "Sie hat eine blaue Tasche.",
+                ex2Es: "Ella tiene un bolso azul. (Femenino: -e)",
+                tip: "Con sustantivos femeninos (die Tasche) añade '-e': eine blaue Tasche."
+            },
+            {
+                id: "gelb",
+                de: "gelb",
+                pronunc: "[gelp]",
+                es: "Amarillo",
+                hex: "#eab308",
+                textColor: "#000000",
+                ex1De: "Die Sonne ist gelb.",
+                ex1Es: "El sol es amarillo.",
+                ex2De: "Er kauft ein gelbes Auto.",
+                ex2Es: "Él compra un coche amarillo. (Neutro: -es)",
+                tip: "La 'b' al final se pronuncia suavemente como 'p' [gelp]."
+            },
+            {
+                id: "gruen",
+                de: "grün",
+                pronunc: "[gryun]",
+                es: "Verde",
+                hex: "#22c55e",
+                textColor: "#ffffff",
+                ex1De: "Das Gras ist grün.",
+                ex1Es: "La hierba es verde.",
+                ex2De: "Ich sehe einen grünen Baum.",
+                ex2Es: "Veo un árbol verde. (Acusativo Masculino: -en)",
+                tip: "Atención a la diéresis ü en 'grün'."
+            },
+            {
+                id: "schwarz",
+                de: "schwarz",
+                pronunc: "[shvarts]",
+                es: "Negro",
+                hex: "#18181b",
+                textColor: "#ffffff",
+                ex1De: "Katzen sind manchmal schwarz.",
+                ex1Es: "Los gatos a veces son negros.",
+                ex2De: "Er trägt eine schwarze Hose.",
+                ex2Es: "Lleva unos pantalones negros.",
+                tip: "Se pronuncia 'sh' al principio y 'tz' al final."
+            },
+            {
+                id: "weiss",
+                de: "weiß",
+                pronunc: "[vais]",
+                es: "Blanco",
+                hex: "#f8fafc",
+                textColor: "#000000",
+                borderColor: "#cbd5e1",
+                ex1De: "Der Schnee ist weiß.",
+                ex1Es: "La nieve es blanca.",
+                ex2De: "Das weiße Hemd ist neu.",
+                ex2Es: "La camisa blanca es nueva.",
+                tip: "Lleva la letra especial ß (Eszett), suena como una 's' doble suave."
+            },
+            {
+                id: "grau",
+                de: "grau",
+                pronunc: "[grau]",
+                es: "Gris",
+                hex: "#64748b",
+                textColor: "#ffffff",
+                ex1De: "Der Elefant ist grau.",
+                ex1Es: "El elefante es gris.",
+                ex2De: "Ein grauer Tag.",
+                ex2Es: "Un día gris.",
+                tip: "Muy parecido al español en pronunciación."
+            },
+            {
+                id: "braun",
+                de: "braun",
+                pronunc: "[braun]",
+                es: "Marrón / Café",
+                hex: "#78350f",
+                textColor: "#ffffff",
+                ex1De: "Der Kaffee ist braun.",
+                ex1Es: "El café es marrón.",
+                ex2De: "Die braune Schokolade schmeckt gut.",
+                ex2Es: "El chocolate marrón sabe bien.",
+                tip: "'au' en alemán suena casi exactamente como 'au' en español."
+            },
+            {
+                id: "rosa",
+                de: "rosa / pink",
+                pronunc: "[ro-sa / pink]",
+                es: "Rosa",
+                hex: "#ec4899",
+                textColor: "#ffffff",
+                ex1De: "Die Blume ist rosa.",
+                ex1Es: "La flor es rosa.",
+                ex2De: "Ein rosarotes Kleid.",
+                ex2Es: "Un vestido rosa rojizo.",
+                tip: "'Rosa' y 'Pink' se usan ampliamente en el nivel A1 cotidiano."
+            },
+            {
+                id: "orange",
+                de: "orange",
+                pronunc: "[o-ranzh]",
+                es: "Naranja",
+                hex: "#f97316",
+                textColor: "#ffffff",
+                ex1De: "Die Karotte ist orange.",
+                ex1Es: "La zanahoria es naranja.",
+                ex2De: "Ein orangener / oranges Saft.",
+                ex2Es: "Un zumo naranja.",
+                tip: "Préstamo del francés; a veces mantiene forma invariable en habla oral A1."
+            },
+            {
+                id: "violett",
+                de: "violett / lila",
+                pronunc: "[fio-let / li-la]",
+                es: "Violeta / Morado",
+                hex: "#a855f7",
+                textColor: "#ffffff",
+                ex1De: "Die Traube ist lila.",
+                ex1Es: "La uva es morada.",
+                ex2De: "Lila und Violett sind ähnlich.",
+                ex2Es: "El morado y el violeta son similares.",
+                tip: "La 'v' en 'violett' se pronuncia como una 'f' suave."
+            },
+            {
+                id: "hellblau",
+                de: "hellblau",
+                pronunc: "[hel-blau]",
+                es: "Azul claro",
+                hex: "#38bdf8",
+                textColor: "#000000",
+                ex1De: "Das Wasser ist hellblau.",
+                ex1Es: "El agua es azul claro.",
+                ex2De: "Ein hellblaues Hemd.",
+                ex2Es: "Una camisa azul claro.",
+                tip: "Añadir el prefijo 'hell-' convierte cualquier color en su tono claro."
+            },
+            {
+                id: "dunkelblau",
+                de: "dunkelblau",
+                pronunc: "[dun-kel-blau]",
+                es: "Azul oscuro",
+                hex: "#1e3a8a",
+                textColor: "#ffffff",
+                ex1De: "Die Nacht ist dunkelblau.",
+                ex1Es: "La noche es azul oscuro.",
+                ex2De: "Eine dunkelblaue Hose.",
+                ex2Es: "Un pantalón azul oscuro.",
+                tip: "Añadir 'dunkel-' convierte cualquier color en su tono oscuro."
+            }
+        ];
+
+        const BADGES_DEFINITIONS = [
+            { id: "b_first", title: "Primer Color", desc: "Aprende tu primer color en alemán", icon: "fa-palette", reqXP: 10 },
+            { id: "b_50xp", title: "Estudiante de Colores", desc: "Alcanza los 50 XP", icon: "fa-seedling", reqXP: 50 },
+            { id: "b_150xp", title: "Maestro del Pincel", desc: "Alcanza los 150 XP", icon: "fa-paint-roller", reqXP: 150 },
+            { id: "b_grammar", title: "Gramática A1", desc: "Alcanza los 300 XP", icon: "fa-graduation-cap", reqXP: 300 },
+            { id: "b_master", title: "Farben-Meister", desc: "Domina todos los colores de la lista", icon: "fa-crown", reqXP: 500 }
+        ];
+
+        // GRAMMAR QUIZ QUESTIONS BANK
+        const QUIZ_QUESTIONS = [
+            {
+                type: "VISUAL",
+                colorId: "rot",
+                qText: "¿Cómo se dice este color en alemán?",
+                correct: "rot",
+                choices: ["rot", "blau", "grün", "gelb"]
+            },
+            {
+                type: "VISUAL",
+                colorId: "gelb",
+                qText: "¿Cuál es el nombre alemán de este color?",
+                correct: "gelb",
+                choices: ["gelb", "weiss", "orange", "grau"]
+            },
+            {
+                type: "GRAMMAR",
+                qText: "Completa con la terminación correcta: 'Der Apfel ist _____ (rojo)'",
+                qSub: "Regla A1: Después de 'ist' el color NO se declina.",
+                correct: "rot",
+                choices: ["rot", "roter", "rote", "rotes"]
+            },
+            {
+                type: "GRAMMAR",
+                qText: "Completa con la declinación A1: 'Das ist ein _____ (rot) Apfel.'",
+                qSub: "Sustantivo masculino (der Apfel) con artículo indefinido (ein).",
+                correct: "roter",
+                choices: ["roter", "rot", "rote", "rotes"]
+            },
+            {
+                type: "GRAMMAR",
+                qText: "Completa: 'Eine _____ (blau) Blume.'",
+                qSub: "Sustantivo femenino (die Blume) con artículo indefinido (eine).",
+                correct: "blaue",
+                choices: ["blaue", "blauer", "blaues", "blauen"]
+            },
+            {
+                type: "GRAMMAR",
+                qText: "Completa: 'Ein _____ (grün) Buch.'",
+                qSub: "Sustantivo neutro (das Buch) con artículo indefinido (ein).",
+                correct: "grünes",
+                choices: ["grünes", "grüne", "grüner", "grün"]
+            },
+            {
+                type: "QUESTION_A1",
+                qText: "Responde a la pregunta: 'Welche Farbe hat die Sonne?'",
+                qSub: "¿De qué color es el sol?",
+                correct: "Die Sonne ist gelb.",
+                choices: ["Die Sonne ist gelb.", "Die Sonne ist blau.", "Die Sonne ist schwarz.", "Die Sonne ist grün."]
+            },
+            {
+                type: "TONE",
+                qText: "¿Cómo se dice 'Azul claro' en alemán?",
+                correct: "hellblau",
+                choices: ["hellblau", "dunkelblau", "blauhell", "graublau"]
+            },
+            {
+                type: "TONE",
+                qText: "¿Qué significa el prefijo 'dunkel-' delante de un color?",
+                correct: "Oscuro (ej. dunkelgrün = verde oscuro)",
+                choices: ["Oscuro (ej. dunkelgrün = verde oscuro)", "Claro", "Brillante", "Transparente"]
+            }
+        ];
+
+        /* ==========================================================================
+           STATE MANAGEMENT
+           ========================================================================== */
+        let state = {
+            xp: 0,
+            streak: 1,
+            lastStudyDate: new Date().toISOString().slice(0, 10),
+            masteredColors: [], // IDs of mastered colors
+            currentCardIndex: 0,
+            isFlipped: false
+        };
+
+        let quizState = {
+            active: false,
+            currentQuestion: null,
+            score: 0,
+            combo: 1
+        };
+
+        /* ==========================================================================
+           INITIALIZATION & LOCALSTORAGE
+           ========================================================================== */
+        window.onload = function() {
+            loadStateFromStorage();
+            renderQuickPalette();
+            updateUI();
+            setupKeyboardShortcuts();
+        };
+
+        function loadStateFromStorage() {
+            const saved = localStorage.getItem('farben_a1_state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    state.xp = parsed.xp || 0;
+                    state.streak = parsed.streak || 1;
+                    state.masteredColors = parsed.masteredColors || [];
+                    state.lastStudyDate = parsed.lastStudyDate || new Date().toISOString().slice(0, 10);
+                } catch(e) {
+                    console.error("Error parsing stored state", e);
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('farben_a1_state', JSON.stringify(state));
+        }
+
+        /* ==========================================================================
+           UI RENDERING FUNCTIONS
+           ========================================================================== */
+        function updateUI() {
+            // Header Stats
+            document.getElementById('xp-display').textContent = `${state.xp} XP`;
+            document.getElementById('streak-count').textContent = state.streak;
+
+            // Player Level Title
+            let levelTitle = "Farben-Neuling";
+            if (state.xp >= 400) levelTitle = "Farben-Meister";
+            else if (state.xp >= 200) levelTitle = "Farben-Künstler";
+            else if (state.xp >= 80) levelTitle = "Farben-Lerner";
+            document.getElementById('player-level').textContent = levelTitle;
+
+            // Mastery Progress
+            const total = COLORS_DATA.length;
+            const masteredCount = state.masteredColors.length;
+            const pct = Math.round((masteredCount / total) * 100);
+
+            document.getElementById('mastery-percent-text').textContent = `${pct}%`;
+            document.getElementById('mastery-progress-bar').style.width = `${pct}%`;
+            document.getElementById('mastery-count-text').textContent = `${masteredCount} de ${total} colores dominados`;
+
+            // Flashcards navigation counter
+            document.getElementById('current-card-num').textContent = state.currentCardIndex + 1;
+            document.getElementById('total-cards-num').textContent = total;
+
+            // Render active card
+            const current = COLORS_DATA[state.currentCardIndex];
+            renderCardData(current);
+
+            // Update Quick Palette Highlight
+            updateQuickPaletteHighlight();
+
+            // Render Badges
+            renderBadges();
+        }
+
+        function renderCardData(colorObj) {
+            const inner = document.getElementById('flashcard-inner');
+            
+            if (state.isFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+
+            // Front Swatch styling
+            const swatch = document.getElementById('card-front-swatch');
+            swatch.style.backgroundColor = colorObj.hex;
+            if (colorObj.borderColor) {
+                swatch.style.borderColor = colorObj.borderColor;
+            } else {
+                swatch.style.borderColor = 'rgba(255,255,255,0.8)';
+            }
+
+            document.getElementById('card-front-de').textContent = colorObj.de;
+            document.getElementById('card-front-pronunc').textContent = colorObj.pronunc;
+
+            // Back Data
+            document.getElementById('card-back-es').textContent = colorObj.es;
+            document.getElementById('card-back-ex1-de').textContent = `"${colorObj.ex1De}"`;
+            document.getElementById('card-back-ex1-es').textContent = colorObj.ex1Es;
+            document.getElementById('card-back-ex2-de').textContent = `"${colorObj.ex2De}"`;
+            document.getElementById('card-back-ex2-es').textContent = colorObj.ex2Es;
+            document.getElementById('card-back-grammartip').textContent = colorObj.tip;
+
+            // Status Pill
+            const isMastered = state.masteredColors.includes(colorObj.id);
+            const statusPill = document.getElementById('card-status-pill');
+            if (isMastered) {
+                statusPill.textContent = "¡Dominado!";
+                statusPill.className = "text-xs px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-300 font-bold";
+            } else {
+                statusPill.textContent = "Pendiente";
+                statusPill.className = "text-xs px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium";
+            }
+        }
+
+        function renderQuickPalette() {
+            const container = document.getElementById('quick-palette-grid');
+            container.innerHTML = '';
+
+            COLORS_DATA.forEach((col, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full aspect-square rounded-xl transition transform hover:scale-110 shadow-sm border-2 border-white dark:border-slate-700 relative flex items-center justify-center`;
+                btn.style.backgroundColor = col.hex;
+                btn.title = `${col.de} (${col.es})`;
+                btn.onclick = () => jumpToCard(idx);
+                btn.id = `palette-btn-${idx}`;
+                container.appendChild(btn);
+            });
+        }
+
+        function updateQuickPaletteHighlight() {
+            COLORS_DATA.forEach((col, idx) => {
+                const btn = document.getElementById(`palette-btn-${idx}`);
+                if (!btn) return;
+
+                const isMastered = state.masteredColors.includes(col.id);
+                if (idx === state.currentCardIndex) {
+                    btn.classList.add('ring-4', 'ring-amber-500', 'scale-105');
+                } else {
+                    btn.classList.remove('ring-4', 'ring-amber-500', 'scale-105');
+                }
+
+                // Add checkmark icon for mastered colors
+                btn.innerHTML = isMastered ? `<i class="fa-solid fa-check text-[10px] ${col.textColor === '#000000' ? 'text-black' : 'text-white'}"></i>` : '';
+            });
+        }
+
+        /* ==========================================================================
+           FLASHCARD CONTROLS & TTS
+           ========================================================================== */
+        function flipCard() {
+            state.isFlipped = !state.isFlipped;
+            const inner = document.getElementById('flashcard-inner');
+            if (state.isFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            state.isFlipped = false;
+            state.currentCardIndex = (state.currentCardIndex + 1) % COLORS_DATA.length;
+            updateUI();
+        }
+
+        function previousCard() {
+            state.isFlipped = false;
+            state.currentCardIndex = (state.currentCardIndex - 1 + COLORS_DATA.length) % COLORS_DATA.length;
+            updateUI();
+        }
+
+        function jumpToCard(index) {
+            state.isFlipped = false;
+            state.currentCardIndex = index;
+            switchMainTab('study');
+            updateUI();
+        }
+
+        function markCardMastery(known) {
+            const current = COLORS_DATA[state.currentCardIndex];
+            const masteredIdx = state.masteredColors.indexOf(current.id);
+
+            if (known) {
+                if (masteredIdx === -1) {
+                    state.masteredColors.push(current.id);
+                    state.xp += 10;
+                }
+            } else {
+                if (masteredIdx !== -1) {
+                    state.masteredColors.splice(masteredIdx, 1);
+                }
+            }
+
+            saveState();
+            nextCard();
+        }
+
+        // Web Speech API Pronunciation for German (de-DE)
+        function speakGermanText() {
+            const current = COLORS_DATA[state.currentCardIndex];
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(current.de);
+                utterance.lang = 'de-DE';
+                utterance.rate = 0.85; // Slightly relaxed pace for learners
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Tu navegador no admite síntesis de voz en tiempo real.");
+            }
+        }
+
+        /* ==========================================================================
+           QUIZ ENGINE & GAMIFICATION
+           ========================================================================== */
+        function startQuizSession() {
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-active-screen').classList.remove('hidden');
+
+            quizState.active = true;
+            quizState.score = 0;
+            quizState.combo = 1;
+
+            document.getElementById('quiz-combo-val').textContent = quizState.combo;
+            nextQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            if (!quizState.active) return;
+
+            // Hide feedback
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            feedbackBox.classList.add('hidden');
+
+            // Pick random question from question bank
+            const q = QUIZ_QUESTIONS[Math.floor(Math.random() * QUIZ_QUESTIONS.length)];
+            quizState.currentQuestion = q;
+
+            // Render Question Details
+            document.getElementById('quiz-q-type').textContent = q.type === 'VISUAL' ? 'Identificación Visual' : (q.type === 'GRAMMAR' ? 'Gramática A1' : 'Pregunta & Respuesta A1');
+            document.getElementById('quiz-q-text').textContent = q.qText;
+            document.getElementById('quiz-q-sub').textContent = q.qSub || "";
+
+            // Visual sample handling
+            const visualSample = document.getElementById('quiz-visual-sample');
+            if (q.type === 'VISUAL') {
+                const colorObj = COLORS_DATA.find(c => c.id === q.colorId);
+                visualSample.classList.remove('hidden');
+                visualSample.style.backgroundColor = colorObj.hex;
+            } else {
+                visualSample.classList.add('hidden');
+            }
+
+            // Shuffle options
+            let shuffled = [...q.choices].sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            shuffled.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl font-bold text-sm transition transform active:scale-98 shadow-sm flex items-center justify-between";
+                btn.innerHTML = `<span>${choice}</span> <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>`;
+                btn.onclick = () => handleQuizAnswer(choice, q.correct, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(selected, correct, buttonEl) {
+            const allBtns = document.querySelectorAll('#quiz-options-container button');
+            allBtns.forEach(b => b.disabled = true);
+
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            feedbackBox.classList.remove('hidden');
+
+            if (selected === correct) {
+                buttonEl.className = "w-full text-left p-4 bg-emerald-500 text-white border-2 border-emerald-600 rounded-2xl font-bold text-sm shadow-md flex items-center justify-between animate-bounce";
+                buttonEl.innerHTML = `<span>${selected}</span> <i class="fa-solid fa-check"></i>`;
+
+                const earnedXP = 20 * quizState.combo;
+                state.xp += earnedXP;
+                quizState.score += earnedXP;
+                quizState.combo += 1;
+
+                feedbackBox.className = "p-4 rounded-2xl text-center font-bold text-sm bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 border border-emerald-300";
+                feedbackBox.textContent = `¡Richtig! (¡Correcto!) +${earnedXP} XP`;
+
+            } else {
+                buttonEl.className = "w-full text-left p-4 bg-red-500 text-white border-2 border-red-600 rounded-2xl font-bold text-sm shadow-md flex items-center justify-between";
+                buttonEl.innerHTML = `<span>${selected}</span> <i class="fa-solid fa-xmark"></i>`;
+
+                // Highlight correct
+                allBtns.forEach(b => {
+                    if (b.textContent.includes(correct)) {
+                        b.classList.add('bg-emerald-100', 'dark:bg-emerald-900', 'border-emerald-500');
+                    }
+                });
+
+                quizState.combo = 1; // Reset combo
+
+                feedbackBox.className = "p-4 rounded-2xl text-center font-bold text-sm bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200 border border-red-300";
+                feedbackBox.textContent = `Falsch! La respuesta correcta era: "${correct}"`;
+            }
+
+            document.getElementById('quiz-combo-val').textContent = quizState.combo;
+            saveState();
+            updateUI();
+
+            setTimeout(() => {
+                nextQuizQuestion();
+            }, 1600);
+        }
+
+        /* ==========================================================================
+           BADGES & NAVIGATION
+           ========================================================================== */
+        function renderBadges() {
+            const container = document.getElementById('badges-grid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            BADGES_DEFINITIONS.forEach(badge => {
+                const unlocked = state.xp >= badge.reqXP;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border ${unlocked ? 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800' : 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 opacity-60'} flex items-start space-x-3 transition`;
+                
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 ${unlocked ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}">
+                        <i class="fa-solid ${badge.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">${badge.title}</h4>
+                            ${unlocked ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">Logrado</span>' : ''}
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${badge.desc}</p>
+                        <span class="text-[10px] font-semibold text-amber-600 dark:text-amber-400 block mt-2">Requisito: ${badge.reqXP} XP</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function switchMainTab(tabName) {
+            document.getElementById('view-study').classList.add('hidden');
+            document.getElementById('view-grammar').classList.add('hidden');
+            document.getElementById('view-quiz').classList.add('hidden');
+            document.getElementById('view-badges').classList.add('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition";
+            });
+
+            if (tabName === 'study') {
+                document.getElementById('view-study').classList.remove('hidden');
+                document.getElementById('tab-study').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm transition bg-amber-500 text-white shadow-sm";
+            } else if (tabName === 'grammar') {
+                document.getElementById('view-grammar').classList.remove('hidden');
+                document.getElementById('tab-grammar').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm transition bg-amber-500 text-white shadow-sm";
+            } else if (tabName === 'quiz') {
+                document.getElementById('view-quiz').classList.remove('hidden');
+                document.getElementById('tab-quiz').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm transition bg-amber-500 text-white shadow-sm";
+            } else if (tabName === 'badges') {
+                document.getElementById('view-badges').classList.remove('hidden');
+                document.getElementById('tab-badges').className = "tab-btn flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm transition bg-amber-500 text-white shadow-sm";
+            }
+        }
+
+        // Dark Theme Toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Keyboard Shortcuts for Flashcards
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.code === 'ArrowRight') {
+                    nextCard();
+                } else if (e.code === 'ArrowLeft') {
+                    previousCard();
+                } else if (e.key === '1') {
+                    markCardMastery(false);
+                } else if (e.key === '2') {
+                    markCardMastery(true);
+                }
+            });
+        }
+
+        function confirmResetProgress() {
+            if (confirm("¿Deseas reiniciar tu progreso de puntos y colores dominados?")) {
+                state.xp = 0;
+                state.masteredColors = [];
+                saveState();
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
